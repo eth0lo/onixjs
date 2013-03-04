@@ -16,11 +16,12 @@
   "dependencies": {},
   "devDependencies": {
     "grunt": "0.4.x",
-    "grunt-contrib-copy": "0.4.0rc7",
     "grunt-contrib-clean": "0.4.0rc6",
-    "grunt-contrib-watch": "0.1.4",
-    "grunt-contrib-jshint": "0.1.1rc6",
+    "grunt-contrib-copy": "0.4.0rc7",
     "grunt-contrib-connect": "0.1.1rc6",
+    "grunt-contrib-jshint": "0.1.1rc6",
+    "grunt-contrib-watch": "0.1.4",
+    "grunt-docco": "0.2.0",
     "mocha": "1.8.1"
   }
 }
