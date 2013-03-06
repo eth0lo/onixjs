@@ -53,28 +53,49 @@ onix = root.onix = {};
 // entrance point for all Node creation, it will create a Node element depending
 // on the type and number of parameters provided. Examples:
 //
-// *Create a empty Node element*  
+// *Create a empty Node element*
 // onix.eb('div') -> `<div></div>`
 //
-// *Create a empty Node with attributes*  
+// *Create a empty Node with attributes*
 // onix.eb('div', {class: 'test'}) -> `<div class="test"></div>`
 //
-// *Create a Node with content*  
+// *Create a Node with content*
 // onix.eb('div', 'test') -> `<div>test</div>`
 function eb(tagname, attributesOrContent) {
   var element  = createElement(tagname),
       contents = slice(arguments, 1);
 
-  element = addAttributes(element, attributesOrContent);
   element = contents.reduce(addContent, element);
-
   return element;
 }
 // expose the eb function (element builder)
 onix.eb = eb;
 
+// add the content to a Node depending on the type of the content; if *content*
+// is a *string* it will create a text node before appending to the given
+// *element*
+function addContent(element, content) {
+  if (isObject(content)) createAttributes(element, content);
+  if (isString(content)) createContent(element, createText(content));
+  if (isNode(content))   createContent(element, content);
+
+  return element;
+}
+
+// add all the given attributes inside the *attributes* object literal to the
+// *element*
+function createAttributes(element, attributes) {
+  if (!isObject(attributes)) return element;
+  var attribute;
+
+  for (attribute in attributes)
+    element = createAttribute(element, attribute, attributes[attribute]);
+
+  return element;
+}
+
 // add a property to a given Node with the specified value
-function addAttribute(element, property, value) {
+function createAttribute(element, property, value) {
   if (isGetSetAttributeAvailable)
     element.setAttribute(property, value);
   else
@@ -83,39 +104,19 @@ function addAttribute(element, property, value) {
   return element;
 }
 
-// add all the given attributes inside the *attributes* object literal to the 
-// *element*
-function addAttributes(element, attributes) {
-  if (!isObject(attributes)) return element;
-  var attribute;
-
-  for (attribute in attributes)
-    element = addAttribute(element, attribute, attributes[attribute]);
-
+function createContent(element, content) {
+  element.appendChild(content);
   return element;
 }
-
-// add the content to a Node depending on the type of the content; if *content* 
-// is a *string* it will create a text node before appending to the given 
-// *element*
-function addContent(element, content) {
-  if (isString(content)) element.appendChild(createText(content));
-  if (isNode(content)) element.appendChild(content);
-
-  return element;
-}
-
 // creates a node based on the *tagname* provided
 function createElement(tagname) {
   if (!isString(tagname)) throw new Error('tagname has to be a string');
-
   return document.createElement(tagname);
 }
 
 // creates a text node with the *text* provided
 function createText(text) {
   if (!isString(text)) throw new Error('text has to be a string');
-
   return document.createTextNode(text);
 }
 
@@ -139,7 +140,7 @@ function cleanTags() {
 // expose the cleanTags function
 onix.cleanTags = cleanTags;
 
-// it will take all the tags defined in onix.tags and create shorthand for 
+// it will take all the tags defined in onix.tags and create shorthand for
 // those; for example instead of using onix.eb('div'), you could use onix.div
 function updateTags() {
   var tags = onix.tags;
