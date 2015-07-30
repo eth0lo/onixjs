@@ -55,6 +55,22 @@ describe('Onixjs', function(){
 
       expect(element).to.equal(example);
     });
+
+    it('should create siblings if the content is an array of nodes', function(){
+      var example   = '<div>hola<span>test</span><span>test</span></div>',
+          div       = onix.div,
+          span      = onix.span,
+          element, list
+
+      list = [1,2].map(function(){return span('test')});
+      element =
+        div(
+          'hola',
+          list
+        ).outerHTML;
+
+      expect(element).to.equal(example);
+    });
   });
 
   describe('Templating Options', function(){

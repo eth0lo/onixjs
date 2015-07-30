@@ -28,6 +28,10 @@ function isString(str) {
   return str && typeof str === 'string';
 }
 
+isArray = function(arg) {
+  return Object.prototype.toString.call(arg) === '[object Array]';
+};
+
 // alias for slice
 function slice(arr, index) {
   return Array.prototype.slice.call(arr, index);
@@ -78,7 +82,8 @@ function addContent(element, content) {
   if (isObject(content)) createAttributes(element, content);
   if (isString(content)) createContent(element, createText(content));
   if (isNode(content))   createContent(element, content);
-
+  if (isArray(content))  content.reduce(addContent, element)
+    debugger
   return element;
 }
 
